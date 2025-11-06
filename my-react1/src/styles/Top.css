@@ -1,0 +1,134 @@
+.homepage {
+  background: linear-gradient(-45deg, #c3ddff34, #c3ddff);
+  display: flex;
+  flex-direction: column;
+  color: #011836;
+  font-size: 100%;
+  font-family: "Noto Sans JP", sans-serif;
+  min-height: 100vh;
+}
+
+/* コンテンツ（ロゴ＋説明） */
+.content {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 5% 10%;
+  gap: 5%;
+}
+
+/* ロゴ部分 */
+.logo-section {
+  width: 50%;
+}
+
+.logo {
+  width: 100%;
+  height: auto;
+}
+
+/* 説明部分 */
+.text-section {
+  width: 50%;
+}
+
+.text-section h2 {
+  font-size: 3.4vw;
+  font-weight: bold;
+  margin-bottom: 0;
+}
+
+.text-section p {
+  font-size: 1.75vw;
+  line-height: 1.5;
+  margin-top: 3%;
+}
+
+/* 紹介部分 */
+.explanation-section {
+  text-align: center;
+  background: #c3ddff80;
+  padding: 2%;
+  font-size: 1.25rem;
+  font-weight: 500;
+}
+
+/* ボタン部分 */
+.button-section {
+  display: flex;
+  gap: 5%;
+  justify-content: center;
+  background: radial-gradient(#a5ccff, #c3ddff66);
+  padding: 3% 0;
+}
+
+.button-box {
+  text-align: center;
+  width: 30%;
+}
+
+.button-box p {
+  font-size: 1.5rem;
+  margin-top: 0;
+  margin-bottom: 1.5rem;
+}
+
+.btn {
+  background-color: #011836;
+  color: #c3ddff;
+  border: none;
+  width: 80%;
+  height: 3.5rem;
+  border-radius: 9999px;
+  font-weight: bold;
+  font-size: 1.5rem;
+  cursor: pointer;
+  box-shadow: 0 5px 4px rgba(0, 0, 0, 0.2);
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.btn:hover {
+  opacity: 0.9;
+  transform: translateY(-1px);
+}
+
+/* ---------- レスポンシブ対応 ---------- */
+@media screen and (max-width: 768px) {
+  .content {
+    flex-direction: column;
+    padding: 10% 5%;
+  }
+
+  .logo-section,
+  .text-section {
+    width: 100%;
+  }
+
+  .text-section h2 {
+    font-size: 150%;
+    text-align: center;
+  }
+
+  .text-section p {
+    font-size: 90%;
+    text-align: center;
+  }
+
+  .button-section {
+    flex-direction: column;
+    align-items: center;
+    gap: 2rem;
+  }
+
+  .button-box {
+    width: 80%;
+  }
+    .button-box p {
+        font-size: 100%;
+    }
+
+  .btn {
+    font-size: 120%;
+    height: 3rem;
+  }
+}
