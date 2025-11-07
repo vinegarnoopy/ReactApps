@@ -1,3 +1,4 @@
+/* Top styles copied from Top.css */
 .homepage {
   background: linear-gradient(-45deg, #c3ddff34, #c3ddff);
   display: flex;
@@ -60,6 +61,7 @@
   justify-content: center;
   background: radial-gradient(#a5ccff, #c3ddff66);
   padding: 3% 0;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
 }
 
 .button-box {

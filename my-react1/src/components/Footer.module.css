@@ -1,0 +1,36 @@
+/* Footer styles matching header theme */
+.footer {
+  background: linear-gradient(0deg, #eef6ff, #f7fbff);
+  border-top: 3px solid #0f2740;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 14px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.text {
+  color: #5b6b7a;
+  font-size: 0.95rem;
+}
+
+.links {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.link {
+  color: #0f2740;
+  text-decoration: none;
+  font-size: 0.9rem;
+}
+
+@media (max-width: 640px) {
+  .container { flex-direction: column; text-align: center; gap: 8px; }
+}

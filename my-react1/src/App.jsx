@@ -1,4 +1,6 @@
 import { BrowserRouter,Routes, Route } from "react-router-dom";
+import Footer from "./components/Footer";
+import ScrollToTop from "./components/ScrollToTop";
 import Top from "./pages/Top";
 import Login from "./pages/Login";
 import SignUp from "./pages/SignUp";
@@ -12,6 +14,7 @@ import Settings from "./pages/Settings";
 function App() {
   return (
     <BrowserRouter>
+      <ScrollToTop />
       <Routes>
         <Route path="/" element={<Top />} />
         <Route path="/login" element={<Login />} />
@@ -23,8 +26,8 @@ function App() {
         <Route path="/user" element={<User />} />
         <Route path="/settings" element={<Settings />} />
       </Routes>
-    </BrowserRouter>
-  );
+      <Footer />
+    </BrowserRouter>)
 }
 
 export default App;

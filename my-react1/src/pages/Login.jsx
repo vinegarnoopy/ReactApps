@@ -1,30 +1,35 @@
 import { Link } from "react-router-dom";
-import "/src/styles/Login.css"
+import styles from "../styles/Login.module.css"
+
 function Login() {
   return (
-    <div className="loginpage">
-      <div className="logo-section">
-          <img src="/src/assets/OverSea_Logo.png" alt="OverSea-Logo" className="logo" />
+    <div className={styles['loginpage']}>
+      <div className={styles['logo-section']}>
+        <Link to="/">
+          <img src="/src/assets/OverSea_Logo.png" alt="OverSea-Logo" className={styles.logo} />
+        </Link>
       </div>
-      <div className="form-section">
+
+      <div className={styles['form-section']}>
         <form>
           <h2>Login</h2>
-          <div className="form">
-            <label htmlFor="Username" className="text">Username</label><br/>
-            <input type="Username"  className="textBox" id="Username" name="Username" required />
+          <div className={styles.form}>
+            <label htmlFor="Username" className={styles.text}>Username</label>
+            <input type="Username"  className={styles.textBox} id="Username" name="Username" required />
           </div>
-          <div className="form">
-            <label htmlFor="password" className="text">Password</label><br/>
-            <input type="password" className="textBox" id="password" name="password" required />
+          <div className={styles.form}>
+            <label htmlFor="password" className={styles.text}>Password</label>
+            <input type="password" className={styles.textBox} id="password" name="password" required />
           </div>
-          <button type="submit" className="btn-login">Login</button>
+          <button type="submit" className={styles['btn-login']}>Login</button>
           <Link to="/reset-password">
-          <p className="forgetpass">Passwordを忘れた</p>
+          <p className={styles.forgetpass}>Passwordを忘れた</p>
           </Link>
-          <div className="signup-section">
+
+          <div className={styles['signup-section']}>
             <p>アカウントをお持ちでない場合は</p>
             <Link to="/signup">
-            <button className="btn-signup">Signup</button>
+            <button className={styles['btn-signup']}>Signup</button>
             </Link>
           </div>
 
