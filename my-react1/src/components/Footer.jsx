@@ -5,9 +5,9 @@ function Footer() {
     <footer className={styles.footer}>
       <div className={styles.container}>
         <div className={styles.text}>
-          <small>© {new Date().getFullYear()} OverSea. All rights reserved.</small><br/>
           <small>Data provided by The Guardian Open Platform </small><br/>
-          <small>© Guardian News & Media Ltd.</small>
+          <small>© Guardian News & Media Ltd.</small><br/>
+          <small>© {new Date().getFullYear()} OverSea.</small><br/>
         </div>
         <div className={styles.links}>
           <a className={styles.link} href="/privacy">Privacy</a>

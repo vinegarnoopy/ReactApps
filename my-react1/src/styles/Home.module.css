@@ -1,0 +1,22 @@
+.homepage {
+  background: linear-gradient(-45deg, #c3ddff34, #c3ddff);
+  display: flex;
+  flex-direction: column;
+  color: #011836;
+  font-size: 100%;
+  font-family: "Noto Sans JP", sans-serif;
+  min-height: 100vh;
+}
+
+.content {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 32px 16px;
+  width: 100%;
+}
+
+.welcome {
+  color: #011836;
+  font-size: 2rem;
+  margin-bottom: 24px;
+}
