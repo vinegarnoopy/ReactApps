@@ -36,12 +36,25 @@
   font-size: 3.4vw;
   font-weight: bold;
   margin-bottom: 0;
+  width: 100%;
+  white-space: nowrap;
+  overflow: hidden;
+  animation: typing 1.5s steps(20);
 }
 
 .text-section p {
   font-size: 1.75vw;
-  line-height: 1.5;
+  width: 100%;
   margin-top: 3%;
+  white-space: nowrap;
+  overflow: hidden;
+  animation: typing 1.5s steps(20);
+}
+
+@keyframes typing {
+  from {
+    width: 0ch;
+  }
 }
 
 /* 紹介部分 */

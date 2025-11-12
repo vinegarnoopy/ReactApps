@@ -14,18 +14,14 @@ function Top() {
         >
           <img src="/src/assets/OverSea_Logo.png" alt="OverSea-Logo" className={styles.logo} />
         </Motion.div>
-        <Motion.div 
-          initial={{ opacity: 0, x: 500 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 1.5, ease: "easeOut" }}
-        className={styles['text-section']}>
+        <div className={styles['text-section']}>
           <h2>サッカーファンのための<br/>英語学習サイト</h2>
           <p>
             海外サッカーの記事を読みながら英語を学ぶ<br />
             お気に入りのチームニュースを楽しむ<br />
             自分だけの単語帳を作る
           </p>
-        </Motion.div>
+        </div>
       </div>
 
       <div className={styles['button-section']}>
