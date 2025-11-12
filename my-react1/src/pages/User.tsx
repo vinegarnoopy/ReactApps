@@ -1,8 +1,10 @@
-function User() {
+import { FC } from "react";
+
+const User: FC = () => {
   return (
     <div>
       <h1>User Page</h1>
     </div>
   );
-}
+};
 export default User;

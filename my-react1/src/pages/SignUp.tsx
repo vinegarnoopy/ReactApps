@@ -1,6 +1,8 @@
 import { Link } from "react-router-dom";
+import { FC } from "react";
 import styles from "../styles/SignUp.module.css"
-function SignUp() {
+
+const SignUp: FC = () => {
   return (
     <div className={styles['signuppage']}>
       <div className={styles['logo-section']}>
@@ -36,6 +38,6 @@ function SignUp() {
       </div>
     </div>
   );
-}
+};
 
 export default SignUp;

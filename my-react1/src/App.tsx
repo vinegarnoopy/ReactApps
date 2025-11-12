@@ -1,4 +1,5 @@
-import { BrowserRouter,Routes, Route } from "react-router-dom";
+import React from "react";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Footer from "./components/Footer";
 import ScrollToTop from "./components/ScrollToTop";
 import Top from "./pages/Top";
@@ -11,7 +12,7 @@ import WordList from "./pages/WordList";
 import User from "./pages/User";
 import Settings from "./pages/Settings";
 
-function App() {
+const App: React.FC = () => {
   return (
     <BrowserRouter>
       <ScrollToTop />
@@ -27,7 +28,8 @@ function App() {
         <Route path="/settings" element={<Settings />} />
       </Routes>
       <Footer />
-    </BrowserRouter>)
-}
+    </BrowserRouter>
+  );
+};
 
 export default App;

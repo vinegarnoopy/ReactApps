@@ -1,7 +1,8 @@
 import { Link } from "react-router-dom";
+import { FC } from "react";
 import styles from "../styles/Login.module.css"
 
-function Login() {
+const Login: FC = () => {
   return (
     <div className={styles['loginpage']}>
       <div className={styles['logo-section']}>
@@ -38,6 +39,6 @@ function Login() {
       </div>
     </div>
   );
-}
+};
 
 export default Login;

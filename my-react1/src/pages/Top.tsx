@@ -1,8 +1,9 @@
 import { Link } from "react-router-dom";
+import { FC } from "react";
 import styles from "../styles/Top.module.css"
 import { motion as Motion } from "framer-motion"
 
-function Top() {
+const Top: FC = () => {
   return (
     <div className={styles.homepage}>
       <div className={styles.content}>
@@ -31,7 +32,7 @@ function Top() {
           <button className={styles.btn}>Login</button>
           </Link>
         </div>
-  <div className={styles['button-box']}>
+        <div className={styles['button-box']}>
           <p>アカウントをお持ちでない場合は</p>
           <Link to="/signup">
           <button className={styles.btn}>Signup</button>
@@ -41,11 +42,9 @@ function Top() {
 
       <div className={styles['explanation-section']}>
         <p>仮文：海外サッカーの記事を通じて、楽しみながら英語力の向上を目指す</p>
-
       </div>
-
     </div>
   );
-}
+};
 
 export default Top;

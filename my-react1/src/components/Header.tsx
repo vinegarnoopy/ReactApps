@@ -1,17 +1,17 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, FC } from "react";
 import { Link } from "react-router-dom";
 import styles from "../styles/Header.module.css";
 
-function Header() {
-  const [open, setOpen] = useState(false);
-  const containerRef = useRef(null);
-  const hamburgerRef = useRef(null);
-  const menuRef = useRef(null);
+const Header: FC = () => {
+  const [open, setOpen] = useState<boolean>(false);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const hamburgerRef = useRef<HTMLButtonElement>(null);
+  const menuRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (!open) return;
-    function handlePointerDown(e) {
-      const target = e.target;
+    function handlePointerDown(e: PointerEvent): void {
+      const target = e.target as Node;
       if (
         containerRef.current && containerRef.current.contains(target)
       ) {
@@ -19,13 +19,13 @@ function Header() {
       }
       setOpen(false);
     }
-    document.addEventListener("pointerdown", handlePointerDown);
-    return () => document.removeEventListener("pointerdown", handlePointerDown);
+    document.addEventListener("pointerdown", handlePointerDown as EventListener);
+    return () => document.removeEventListener("pointerdown", handlePointerDown as EventListener);
   }, [open]);
 
   return (
     <header className={styles.header}>
-  <div className={styles.container} ref={containerRef}>
+      <div className={styles.container} ref={containerRef}>
         <div className={styles.brand}>
           <Link to="/home" className={styles.logo} aria-label="Home">
             <img src="/src/assets/OverSea_Logo.png" alt="OverSea logo" />
@@ -56,6 +56,6 @@ function Header() {
       </div>
     </header>
   );
-}
+};
 
 export default Header;
