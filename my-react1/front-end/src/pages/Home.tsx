@@ -1,67 +1,69 @@
-import { FC, useState } from "react";
+import { FC, useEffect, useState } from "react";
 import styles from "../styles/Home.module.css"
 import Header from "../components/Header";
 import { Link } from "react-router-dom";
+import { getArticlesByLeague, ArticlesByLeague, LeagueKey, FetchedArticle } from '../api/articles';
 
-type TabTypes = "Premier League" | "La Liga" | "Bundes Liga" | "Ligue 1" | "Serie A" | "UCL";
+type TabTypes = "Premier League" | "La Liga" | "Bundes Liga" | "Ligue 1" | "Serie A" | "Others";
 
 interface Article {
-  id: number;
+  id: string | number;
   title: string;
-  picture: string;
+  picture?: string;
   summary: string;
 }
 
-//記事取得
-
-//記事分類=>サーバー側処理？
-
-//ダミーデータ
-const articlesByLeague: Record<TabTypes, Article[]> = {
-    "Premier League": [
-      { id: 1, title: "Arsenal dominates in North London Derby", picture: "Picture", summary: "Arsenal secured a convincing 3-0 victory" },
-      { id: 2, title: "Manchester City extends winning streak", picture: "Picture", summary: "City's unstoppable form continues" },
-      { id: 3, title: "Liverpool's comeback victory", picture: "Picture", summary: "Reds rally from 2-0 down to win 3-2" },
-      { id: 4, title: "Chelsea's new signing impresses", picture: "Picture", summary: "Debut goal seals three points" },
-    ],
-    "La Liga": [
-      { id: 5, title: "Real Madrid wins El Clásico", picture: "Picture", summary: "Thrilling 2-1 victory at Camp Nou" },
-      { id: 6, title: "Barcelona's youngster shines", picture: "Picture", summary: "Hat-trick in 4-1 win" },
-      { id: 7, title: "Atlético Madrid holds on", picture: "Picture", summary: "Defensive masterclass secures draw" },
-      { id: 8, title: "Sevilla's Europa hopes", picture: "Picture", summary: "Crucial win keeps European dreams alive" },
-    ],
-    "Bundes Liga": [
-      { id: 9, title: "Bayern Munich crushes rivals", picture: "Picture", summary: "5-0 demolition extends league lead" },
-      { id: 10, title: "Dortmund's comeback", picture: "Picture", summary: "Late goals secure dramatic victory" },
-      { id: 11, title: "Leipzig's winning form", picture: "Picture", summary: "Six consecutive victories" },
-      { id: 12, title: "Union Berlin's surprise", picture: "Picture", summary: "Underdog story continues" },
-    ],
-    "Ligue 1": [
-      { id: 13, title: "PSG dominates title race", picture: "Picture", summary: "Mbappé's brace secures win" },
-      { id: 14, title: "Marseille's resurgence", picture: "Picture", summary: "Three wins in a row" },
-      { id: 15, title: "Lyon's Europa push", picture: "Picture", summary: "Crucial victory moves them up" },
-      { id: 16, title: "Monaco's young talent", picture: "Picture", summary: "18-year-old scores winner" },
-    ],
-    "Serie A": [
-      { id: 17, title: "Inter Milan tops the table", picture: "Picture", summary: "Convincing win maintains lead" },
-      { id: 18, title: "AC Milan derby victory", picture: "Picture", summary: "Derby della Madonnina thriller" },
-      { id: 19, title: "Juventus rebuilding", picture: "Picture", summary: "New tactics paying off" },
-      { id: 20, title: "Napoli's title defense", picture: "Picture", summary: "Champions fight back" },
-    ],
-    "UCL": [
-      { id: 21, title: "Champions League thriller", picture: "Picture", summary: "5-4 aggregate in semifinals" },
-      { id: 22, title: "Underdog advances", picture: "Picture", summary: "Shocking upset in knockout stage" },
-      { id: 23, title: "Record-breaking performance", picture: "Picture", summary: "Historic night in Europe" },
-      { id: 24, title: "Final preview", picture: "Picture", summary: "Two giants set to clash" },
-    ],
-  };
+// API取得結果を保持
+const emptyLeagues: ArticlesByLeague = {
+  'Premier League': [],
+  'La Liga': [],
+  'Serie A': [],
+  'Bundesliga': [],
+  'Ligue 1': [],
+  'Others': []
+};
 
 const Home: FC = () => {
-  const [activeTab, setActiveTab] = useState<TabTypes>("Premier League");
-  const [searchQuery, setSearchQuery] = useState("");
+  const [activeTab, setActiveTab] = useState<TabTypes>('Premier League');
+  const [searchQuery, setSearchQuery] = useState('');
+  const [leagueArticles, setLeagueArticles] = useState<ArticlesByLeague>(emptyLeagues);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
 
-  // activeタブの記事データ
-  const articles = articlesByLeague[activeTab];
+  useEffect(() => {
+    let cancelled = false;
+    async function load() {
+      setLoading(true);
+      setError(null);
+      try {
+        const data = await getArticlesByLeague();
+        if (!cancelled) setLeagueArticles(data);
+      } catch (e: any) {
+        if (!cancelled) setError(e.message || 'Failed to load');
+      } finally {
+        if (!cancelled) setLoading(false);
+      }
+    }
+    load();
+    return () => { cancelled = true; };
+  }, []);
+
+  const tabKeyMap: Record<TabTypes, keyof ArticlesByLeague> = {
+    'Premier League': 'Premier League',
+    'La Liga': 'La Liga',
+    'Bundes Liga': 'Bundesliga',
+    'Ligue 1': 'Ligue 1',
+    'Serie A': 'Serie A',
+    'Others': 'Others'
+  };
+
+  const articles: FetchedArticle[] = leagueArticles[tabKeyMap[activeTab]] ?? [];
+
+  const filtered = (articles as FetchedArticle[]).filter(a => {
+    if (searchQuery.trim() === '') return true;
+    const q = searchQuery.toLowerCase();
+    return a.title.toLowerCase().includes(q) || a.summary.toLowerCase().includes(q) || a.mainText.toLowerCase().includes(q);
+  });
 
   return (
     <div className={styles.homepage}>
@@ -102,10 +104,10 @@ const Home: FC = () => {
               Serie A
             </button>
             <button
-              className={`${styles.tab} ${activeTab === "UCL" ? styles.active : ''}`}
-              onClick={() => setActiveTab("UCL")}
+              className={`${styles.tab} ${activeTab === "Others" ? styles.active : ''}`}
+              onClick={() => setActiveTab("Others")}
             >
-              UCL
+              Others
             </button>
           </div>
           <div className={styles.searchWrapper}>
@@ -119,22 +121,37 @@ const Home: FC = () => {
           </div>
         </div>
 
-        <div className={styles.articlesGrid}>
-          {articles.filter((article) =>
-              searchQuery.trim() === "" ||
-              article.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-              article.summary.toLowerCase().includes(searchQuery.toLowerCase())
-            )
-            .map((article) => (
+        {loading && <div style={{ color: '#c3ddff' }}>Loading...</div>}
+        {error && <div style={{ color: 'tomato' }}>{error}</div>}
+        {!loading && !error && (
+          <div className={`${styles.articlesGrid} ${filtered.length === 1 ? styles.singleGrid : ''}`}>
+            {filtered.map(article => (
               <Link to={`/article/${article.id}`} key={article.id} className={styles.articleCardLink}>
                 <div className={styles.articleCard}>
-                  <div className={styles.articleTitle}>{article.title}</div>
-                  <div className={styles.articlePicture}>{article.picture}</div>
-                  <div className={styles.articleSummary}>{article.summary}</div>
+                  <div className={styles.articleTitle}>
+                    {article.title}
+                  </div>
+                  <div className={styles.articlePictureWrapper}>
+                    {article.thumbnail ? (
+                      <img
+                        src={article.thumbnail}
+                        alt={article.title}
+                        className={styles.articlePicture}
+                        loading="lazy"
+                      />
+                    ) : (
+                      <div className={styles.articlePictureFallback}>No Image</div>
+                    )}
+                  </div>
+                  <div className={styles.articleSummary}>
+                    {article.summary || 'No summary available.'}
+                  </div>
                 </div>
               </Link>
             ))}
-        </div>
+            {filtered.length === 0 && <div style={{ color: '#c3ddff' }}>No articles found.</div>}
+          </div>
+        )}
       </div>
     </div>
   );

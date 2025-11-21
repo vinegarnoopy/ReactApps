@@ -1,68 +1,66 @@
-import { FC, useState } from "react";
-import { useParams, Link } from "react-router-dom";
+import { FC, useState, useEffect } from "react";
+import { Link, useLocation } from "react-router-dom";
 import Header from "../components/Header";
-import styles from "../styles/Article.module.css"
+import styles from "../styles/Article.module.css";
+import { getArticlesByLeague, FetchedArticle } from '../api/articles';
 
 type TabTypes = "原文" | "翻訳文" | "原文＋翻訳文";
 
-//ダミーデータ
-const allArticles = [
-  { id: 1, title: "Arsenal dominates in North London Derby",
-    mainText: "Arsenal secured a convincing 3-0 victoryArsenal secured a convincing 3-0 victoryArsenal secured a convincing 3-0 victoryArsenal secured a convincingArsenal secured a convincing 3-0 victoryArsenal secured a convincing 3-0 victoryArsenal secured a convincing 3-0 victoryArsenal secured a convincinArsenal secured a convincing 3-0 victoryArsenal secured a convincing 3-0 victoryArsenal secured a convincing 3-0 victoryArsenal secured a convincinArsenal secured a convincing 3-0 victoryArsenal secured a convincing 3-0 victoryArsenal secured a convincing 3-0 victoryArsenal secured a convincin 3-0 victoryArsenal secured a convincing 3-0 victoryArsenal secured a convincing 3-0 victoryArsenal secured a convincing 3-0 victoryArsenal secured a convincing 3-0 victoryArsenal secured a convincing 3-0 victoryArsenal secured a convincing 3-0 victoryArsenal secured a convincing 3-0 victoryArsenal secured a convincing 3-0 victoryArsenal secured a convincing 3-0 victoryArsenal secured a convincing 3-0 victoryArsenal secured a convincing 3-0 victoryArsenal secured a convincing 3-0 victory",
-    picture: "Picture", summary: "Arsenal secured a convincing 3-0 victory" },
-  { id: 2, title: "Manchester City extends winning streak",
-    mainText: "City's unstoppable form continues",
-    picture: "Picture", summary: "City's unstoppable form continues" },
-  { id: 3, title: "Liverpool's comeback victory",
-    mainText: "Reds rally from 2-0 down to win 3-2",
-    picture: "Picture", summary: "Reds rally from 2-0 down to win 3-2" },
-  { id: 4, title: "Chelsea's new signing impresses",
-    mainText: "Debut goal seals three points",
-    picture: "Picture", summary: "Debut goal seals three points" },
-  { id: 5, title: "Real Madrid wins El Clásico",
-    mainText: "Thrilling 2-1 victory at Camp Nou",
-    picture: "Picture", summary: "Thrilling 2-1 victory at Camp Nou" },
-];
-
-function transrateArticle(article: typeof allArticles[number] | undefined) {
-  if (!article) return null;
-  // 翻訳ロジックをここに実装
-
-  return {
-    id: article.id,
-    title: article.title,
-    mainText: article.mainText,
-    picture: article.picture,
-  };
-}
-
 const Article: FC = () => {
   const [activeTab, setActiveTab] = useState<TabTypes>("原文");
-  const { id } = useParams<{ id: string }>();
+  const [article, setArticle] = useState<FetchedArticle | null>(null);
+  const [loading, setLoading] = useState(true);
+  const location = useLocation();
+  // "/article/" の後ろ全体をIDとして取得
+  const articleId = location.pathname.replace('/article/', '');
 
-  // IDに基づいて記事を取得、後々サーバーからフェッチするように変更予定
-  const article = allArticles.find(a => a.id === Number(id));
+  useEffect(() => {
+    async function loadArticle() {
+      try {
+        const data = await getArticlesByLeague();
+        // 全リーグから該当IDの記事を探す
+        const allArticles = Object.values(data).flat();
+        const found = allArticles.find(a => a.id === articleId);
+        setArticle(found || null);
+      } catch (error) {
+        console.error('Failed to load article:', error);
+      } finally {
+        setLoading(false);
+      }
+    }
+    loadArticle();
+  }, [articleId]);
 
-  //const transratedArticle = transrateArticle(article); 翻訳機能実装後
-  //ダミー
-  const transratedArticle = {
-    id:0,
-    title: " (翻訳文)",
-    mainText: " (これは翻訳されたテキストです)" ,
-    picture:  "",
-  };
+  if (loading) {
+    return <div style={{ padding: "2rem", color: "#c3ddff" }}>読み込み中...</div>;
+  }
 
   if (!article) {
-    return <div style={{ padding: "2rem" }}>記事が見つかりませんでした。</div>;
+    return <div style={{ padding: "2rem", color: "#c3ddff" }}>記事が見つかりませんでした。</div>;
+  }
+
+  // 表示内容を動的に決定
+  const getDisplayContent = () => {
+    switch (activeTab) {
+      case "原文":
+        return [{ title: article.title, mainText: article.mainText }];
+      case "翻訳文":
+        return [{ 
+          title: article.translatedTitle || '翻訳なし', 
+          mainText: article.translatedSummary || '翻訳が利用できません'
+        }];
+      case "原文＋翻訳文":
+        return [
+          { title: article.title, mainText: article.mainText },
+          { 
+            title: article.translatedTitle || '翻訳なし', 
+            mainText: article.translatedSummary || '翻訳が利用できません'
+          }
+        ];
+    }
   };
 
-  const articlesByType: Record<TabTypes, { title: string; mainText: string; picture: string }[]> = {
-    "原文": [article],
-    "翻訳文": [transratedArticle],
-    "原文＋翻訳文": [article, transratedArticle]
-  };
-
-  const contentToDisplay = articlesByType[activeTab];
+  const contentToDisplay = getDisplayContent();
 
   return (
     <div className={styles.articlepage}>
