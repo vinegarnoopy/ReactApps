@@ -4,7 +4,7 @@ import Header from "../components/Header";
 import styles from "../styles/Article.module.css";
 import { getArticlesByLeague, FetchedArticle } from '../api/articles';
 
-type TabTypes = "原文" | "翻訳文" | "原文＋翻訳文";
+type TabTypes = "原文" | "翻訳文" | "原文/翻訳文";
 
 const Article: FC = () => {
   const [activeTab, setActiveTab] = useState<TabTypes>("原文");
@@ -47,14 +47,14 @@ const Article: FC = () => {
       case "翻訳文":
         return [{ 
           title: article.translatedTitle || '翻訳なし', 
-          mainText: article.translatedSummary || '翻訳が利用できません'
+          mainText: article.translatedBody || '翻訳が利用できません'
         }];
-      case "原文＋翻訳文":
+      case "原文/翻訳文":
         return [
           { title: article.title, mainText: article.mainText },
           { 
             title: article.translatedTitle || '翻訳なし', 
-            mainText: article.translatedSummary || '翻訳が利用できません'
+            mainText: article.translatedBody || '翻訳が利用できません'
           }
         ];
     }
@@ -85,16 +85,16 @@ const Article: FC = () => {
               翻訳文
             </button>
             <button
-              className={`${styles.tab} ${activeTab === "原文＋翻訳文" ? styles.active : ''}`}
-              onClick={() => setActiveTab("原文＋翻訳文")}
+              className={`${styles.tab} ${activeTab === "原文/翻訳文" ? styles.active : ''}`}
+              onClick={() => setActiveTab("原文/翻訳文")}
             >
-              原文＋翻訳文
+              原文/翻訳文
             </button>
           </div>
         </div>
-        <div className={styles.articleContent}>
+        <div className={`${styles.articleContent} ${activeTab === "原文/翻訳文" ? styles.splitView : ''}`}>
           {contentToDisplay.map((item, index) => (
-            <div key={index}>
+            <div key={index} className={activeTab === "原文/翻訳文" ? styles.splitColumn : ''}>
               <div className={styles.title}>
                 {item.title}
               </div>

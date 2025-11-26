@@ -122,23 +122,23 @@ export async function fetchGuardianArticles() {
                         date: article.webPublicationDate,
                         thumbnail: article.fields?.thumbnail || '',
                         translatedTitle: '',     // 後で翻訳結果を追加
-                        translatedSummary: ''    // 後で翻訳結果を追加
+                        translatedBody: ''       // 後で翻訳結果を追加（本文）
                     });
                 });
 
-                // 2. 全記事のタイトルとサマリーを翻訳（並列処理）
-                console.log('[translation] Starting translation for all articles...');
+                // 2. 全記事のタイトルと本文を翻訳（並列処理）
+                console.log('[translation] Starting translation for titles and bodies...');
                 const allArticles = Object.values(articlesByLeague).flat();
                 const translationPromises = allArticles.map(async (article) => {
-                    const [translatedTitle, translatedSummary] = await Promise.all([
+                    const [translatedTitle, translatedBody] = await Promise.all([
                         translateToJapanese(article.title),
-                        translateToJapanese(article.summary)
+                        translateToJapanese(article.mainText)
                     ]);
                     article.translatedTitle = translatedTitle;
-                    article.translatedSummary = translatedSummary;
+                    article.translatedBody = translatedBody;
                 });
                 await Promise.all(translationPromises);
-                console.log('[translation] Completed translation for all articles');
+                console.log('[translation] Completed translation for titles and bodies');
             }
             // 件数ログ (簡潔)
             console.log('[guardian counts]', Object.fromEntries(Object.entries(articlesByLeague).map(([k,v]) => [k, v.length])));

@@ -8,6 +8,7 @@
   min-height: 100vh;
 }
 
+
 .content {
   width: 95%;
   margin: 0 auto;
@@ -78,6 +79,16 @@
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   margin-top: -4px;
   margin-bottom: 3%;
+}
+
+.articleContent.splitView {
+  display: flex;
+  gap: 2%;
+}
+
+.splitColumn {
+  flex: 1;
+  min-width: 0;
 }
 
 .title {

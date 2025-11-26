@@ -8,7 +8,7 @@ export interface FetchedArticle {
     date: string;
     thumbnail: string;
     translatedTitle: string;      // 日本語翻訳されたタイトル
-    translatedSummary: string;    // 日本語翻訳されたサマリー
+    translatedBody: string;       // 日本語翻訳された本文
 }
 export type ArticlesByLeague = Record<LeagueKey, FetchedArticle[]>;
 

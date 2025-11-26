@@ -1,32 +1,45 @@
-import translate from '@vitalets/google-translate-api';
-
 /**
- * Google Translate を使って英語を日本語に翻訳
- * @param {string} text - 翻訳したい英語テキスト
- * @returns {Promise<string>} - 翻訳された日本語テキスト
+ * Google Apps Script を使った翻訳サービス
  */
-export async function translateToJapanese(text) {
-  // 空文字やnullの場合はそのまま返す
-  if (!text || text.trim() === '') {
-    return text || '';
-  }
+const GAS_URL = process.env.GAS_TRANSLATE_URL || '';
 
+// 1回のリクエストで長すぎる本文を避けるため分割
+function chunkText(text, max = 800) {
+  const chunks = [];
+  let i = 0;
+  while (i < text.length) {
+    chunks.push(text.slice(i, i + max));
+    i += max;
+  }
+  return chunks;
+}
+
+export async function translateToJapanese(text) {
+  if (!text || text.trim() === '') return text || '';
   try {
-    const result = await translate(text, { from: 'en', to: 'ja' });
-    return result.text || text;
-  } catch (error) {
-    console.error('Translation failed:', error.message);
-    return text; // エラー時は元のテキストを返す
+    // Google Apps Script WebApp (GET, JSON { code, text })
+    const chunks = text.length <= 800 ? [text] : chunkText(text);
+    const out = [];
+    for (const part of chunks) {
+      if (!GAS_URL) { out.push(part); continue; }
+      const url = `${GAS_URL}?text=${encodeURIComponent(part)}&source=en&target=ja`;
+      const res = await fetch(url, { method: 'GET' });
+      if (!res.ok) { console.error('[gas] HTTP', res.status); out.push(part); continue; }
+      const data = await res.json();
+      out.push((data && data.text) ? data.text : part);
+      await new Promise(r => setTimeout(r, 120));
+    }
+    return out.join('');
+  } catch (e) {
+    console.error('[gas] translation failed', e.message);
+    return text;
   }
 }
 
-/**
- * 複数のテキストを一括翻訳（効率化のため）
- * @param {string[]} texts - 翻訳したいテキストの配列
- * @returns {Promise<string[]>} - 翻訳されたテキストの配列
- */
 export async function translateBatch(texts) {
-  // 並列実行で高速化（ただしAPIの負荷に注意）
-  const promises = texts.map(text => translateToJapanese(text));
-  return Promise.all(promises);
+  const results = [];
+  for (const t of texts) {
+    results.push(await translateToJapanese(t));
+  }
+  return results;
 }
